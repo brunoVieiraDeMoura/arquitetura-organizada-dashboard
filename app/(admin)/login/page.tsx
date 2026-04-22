@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
+import LogoBrand from '@/components/LogoBrand'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -33,7 +34,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-neutral-50">
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-sm border border-neutral-200 p-8">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold text-neutral-900">Domu Arquitetura</h1>
+          <div className="flex justify-center text-neutral-900"><LogoBrand /></div>
           <p className="text-sm text-neutral-500 mt-1">Painel administrativo</p>
         </div>
 

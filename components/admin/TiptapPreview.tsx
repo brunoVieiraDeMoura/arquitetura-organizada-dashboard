@@ -11,9 +11,10 @@ type Props = {
   mainImage: string | null
   content: JSONContent | null
   date: string
+  gallery?: string[]
 }
 
-export default function TiptapPreview({ title, mainImage, content, date }: Props) {
+export default function TiptapPreview({ title, mainImage, content, date, gallery }: Props) {
   const html = useMemo(() => {
     if (!content) return ''
     try {
@@ -48,15 +49,28 @@ export default function TiptapPreview({ title, mainImage, content, date }: Props
         )}
 
         {html ? (
-          <div
-            className="prose prose-neutral max-w-none text-sm max-h-64 overflow-hidden relative"
-          >
+          <div className="prose prose-neutral max-w-none text-sm">
             <div dangerouslySetInnerHTML={{ __html: html }} />
-            {/* Fade-out gradient when content overflows */}
-            <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white to-transparent pointer-events-none" />
           </div>
         ) : (
           <p className="text-sm text-neutral-400 italic">O conteúdo aparecerá aqui...</p>
+        )}
+
+        {gallery && gallery.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-base font-semibold text-neutral-900 mb-3">Galeria</h2>
+            <div className="grid grid-cols-2 gap-2">
+              {gallery.map((url, i) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={i}
+                  src={url}
+                  alt={`foto ${i + 1}`}
+                  className="w-full aspect-square object-cover rounded-lg border border-neutral-200"
+                />
+              ))}
+            </div>
+          </div>
         )}
       </div>
     </div>

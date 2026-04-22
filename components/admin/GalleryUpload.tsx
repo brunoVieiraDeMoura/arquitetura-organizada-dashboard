@@ -50,6 +50,11 @@ export default function GalleryUpload({ value, onChange }: Props) {
     onDrop,
     accept: { 'image/*': [] },
     multiple: true,
+    maxSize: 5 * 1024 * 1024,
+    onDropRejected: (rejections) => {
+      const hasTooBig = rejections.some((r) => r.errors.some((e) => e.code === 'file-too-large'))
+      setError(hasTooBig ? 'Cada imagem deve ter no máximo 5MB' : 'Arquivo inválido')
+    },
   })
 
   return (
@@ -57,9 +62,9 @@ export default function GalleryUpload({ value, onChange }: Props) {
       <label className="block text-sm font-medium text-neutral-700 mb-2">Galeria de Fotos</label>
 
       {value.length > 0 && (
-        <div className="grid grid-cols-3 gap-2 mb-3">
+        <div className="grid grid-cols-4 gap-2 mb-3">
           {value.map((url) => (
-            <div key={url} className="relative aspect-square">
+            <div key={url} className="relative aspect-square max-h-24">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={url} alt="" className="w-full h-full object-cover rounded-lg border border-neutral-200" />
               <button

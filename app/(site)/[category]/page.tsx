@@ -3,15 +3,46 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
 import Footer from '@/components/site/Footer'
+import CategorySearch from './_components/CategorySearch'
+import type { Metadata } from 'next'
 
 export const revalidate = 60
 
-export default async function CategoryPage({
+export async function generateMetadata({
   params,
 }: {
   params: Promise<{ category: string }>
+}): Promise<Metadata> {
+  const { category: categorySlug } = await params
+  const supabase = await createClient()
+  const { data: category } = await supabase
+    .from('categories')
+    .select('name, description')
+    .eq('slug', categorySlug)
+    .single()
+
+  if (!category) return {}
+
+  const title = category.name
+  const description = category.description || `Projetos de ${category.name}`
+
+  return {
+    title,
+    description,
+    openGraph: { title, description, type: 'website' },
+    twitter: { title, description },
+  }
+}
+
+export default async function CategoryPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ category: string }>
+  searchParams: Promise<{ q?: string }>
 }) {
   const { category: categorySlug } = await params
+  const { q } = await searchParams
   const supabase = await createClient()
 
   const [{ data: category }, { data: allCategories }] = await Promise.all([
@@ -28,44 +59,48 @@ export default async function CategoryPage({
 
   if (!category) notFound()
 
-  const projects = (category as any).projects ?? []
+  const allProjects = (category as any).projects ?? []
+  const projects = q
+    ? allProjects.filter((p: any) => p.title.toLowerCase().includes(q.toLowerCase()))
+    : allProjects
   const otherCategories = (allCategories ?? []).filter((c) => c.slug !== categorySlug)
 
   return (
     <>
-      {/* Breadcrumb + navegação entre categorias */}
+      {/* Breadcrumb */}
       <div className="border-b border-neutral-200 bg-white">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          {/* Breadcrumb */}
+        <div className="max-w-7xl mx-auto px-6 py-4">
           <nav className="flex items-center gap-2 text-sm text-neutral-500">
             <Link href="/" className="hover:text-neutral-900 transition-colors">
               Home
             </Link>
             <span>/</span>
-            <Link href="/#projetos" className="hover:text-neutral-900 transition-colors">
+            <Link href="/projetos" className="hover:text-neutral-900 transition-colors">
               Projetos
             </Link>
             <span>/</span>
             <span className="text-neutral-900 font-medium">{category.name}</span>
           </nav>
-
-          {/* Navegação entre categorias */}
-          {otherCategories.length > 0 && (
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-neutral-400">Ver também:</span>
-              {otherCategories.map((cat) => (
-                <Link
-                  key={cat.id}
-                  href={`/${cat.slug}`}
-                  className="text-xs px-3 py-1 rounded-full border border-neutral-200 text-neutral-600 hover:bg-neutral-900 hover:text-white hover:border-neutral-900 transition-colors"
-                >
-                  {cat.name}
-                </Link>
-              ))}
-            </div>
-          )}
         </div>
       </div>
+
+      {/* Navegação entre categorias */}
+      {otherCategories.length > 0 && (
+        <div className="bg-white border-b border-neutral-100">
+          <div className="max-w-7xl mx-auto px-6 py-3 flex items-center gap-2 overflow-x-auto flex-nowrap md:flex-wrap scrollbar-none">
+            <span className="text-xs text-neutral-400 shrink-0">Ver também:</span>
+            {otherCategories.map((cat) => (
+              <Link
+                key={cat.id}
+                href={`/${cat.slug}`}
+                className="text-xs px-3 py-1 rounded-full border border-neutral-200 text-neutral-600 hover:bg-neutral-900 hover:text-white hover:border-neutral-900 transition-colors shrink-0"
+              >
+                {cat.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Cabeçalho da categoria */}
       <div className="max-w-7xl mx-auto px-6 py-12">
@@ -77,7 +112,11 @@ export default async function CategoryPage({
         )}
         <p className="text-sm text-neutral-400 mt-2">
           {projects.length} projeto{projects.length !== 1 ? 's' : ''}
+          {q && allProjects.length !== projects.length && ` de ${allProjects.length}`}
         </p>
+        <div className="mt-6 max-w-sm">
+          <CategorySearch defaultValue={q ?? ''} />
+        </div>
       </div>
 
       {/* Grid de projetos */}
@@ -109,7 +148,7 @@ export default async function CategoryPage({
           <div className="text-center py-20 text-neutral-400">
             <p className="text-lg">Nenhum projeto nesta categoria ainda.</p>
             <Link
-              href="/#projetos"
+              href="/projetos"
               className="mt-4 inline-block text-sm underline hover:text-neutral-900 transition-colors"
             >
               Ver outras categorias

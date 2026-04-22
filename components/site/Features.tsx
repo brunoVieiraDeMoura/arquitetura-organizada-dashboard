@@ -23,7 +23,7 @@ export default function Features({ categories }: { categories: Category[] }) {
   const visibleCategories = categories.slice(0, 2)
 
   return (
-    <section id="projetos" className="py-24 px-6">
+    <section id="projetos" className="py-16 md:py-24 px-6">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl font-bold text-neutral-900 mb-16 text-center">Nossos Projetos</h2>
 

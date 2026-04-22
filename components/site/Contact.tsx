@@ -10,7 +10,7 @@ type Props = {
 
 export default function Contact({
   whatsappNumber = '5511999999999',
-  whatsappMessage = 'Olá! Gostaria de saber mais sobre os projetos da Domu Arquitetura.',
+  whatsappMessage = 'Olá! Gostaria de saber mais sobre os projetos da Arquitetura Organizada.',
   instagramPath = 'domu.arquitetura',
 }: Props) {
   const [name, setName] = useState('')
@@ -44,7 +44,7 @@ export default function Contact({
   }
 
   return (
-    <section id="contato" className="py-24 px-6">
+    <section id="contato" className="py-16 md:py-24 px-6 bg-neutral-50">
       <div className="max-w-xl mx-auto">
         <h2 className="text-3xl font-bold text-neutral-900 mb-4 text-center">Entre em Contato</h2>
         <p className="text-neutral-500 text-center mb-8">

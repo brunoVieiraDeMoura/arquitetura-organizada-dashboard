@@ -1,17 +1,28 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import DeleteProjectButton from './_components/DeleteProjectButton'
+import ProjectSearch from './_components/ProjectSearch'
 
-export default async function ProjectsPage() {
+export default async function ProjectsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>
+}) {
+  const { q } = await searchParams
   const supabase = await createClient()
-  const { data: projects } = await supabase
+
+  let query = supabase
     .from('projects')
     .select('id, title, date, is_featured, categories(name)')
     .order('created_at', { ascending: false })
 
+  if (q) query = query.ilike('title', `%${q}%`)
+
+  const { data: projects } = await query
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-semibold text-neutral-900">Projetos</h1>
         <Link
           href="/dashboard/projects/new"
@@ -21,7 +32,9 @@ export default async function ProjectsPage() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl border border-neutral-200">
+      <ProjectSearch defaultValue={q ?? ''} />
+
+      <div className="bg-white rounded-xl border border-neutral-200 mt-4">
         {projects?.length ? (
           <ul className="divide-y divide-neutral-100">
             {projects.map((p) => (
@@ -49,8 +62,8 @@ export default async function ProjectsPage() {
           </ul>
         ) : (
           <div className="px-6 py-12 text-center text-sm text-neutral-400">
-            Nenhum projeto cadastrado ainda.{' '}
-            <Link href="/dashboard/projects/new" className="underline">Criar primeiro projeto</Link>
+            {q ? `Nenhum projeto encontrado para "${q}".` : 'Nenhum projeto cadastrado ainda. '}
+            {!q && <Link href="/dashboard/projects/new" className="underline">Criar primeiro projeto</Link>}
           </div>
         )}
       </div>

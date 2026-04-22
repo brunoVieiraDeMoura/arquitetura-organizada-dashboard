@@ -49,6 +49,11 @@ export default function ImageUpload({ value, onChange, bucket = 'projects', labe
     onDrop,
     accept: { 'image/*': [] },
     maxFiles: 1,
+    maxSize: 5 * 1024 * 1024,
+    onDropRejected: (rejections) => {
+      const err = rejections[0]?.errors[0]
+      setError(err?.code === 'file-too-large' ? 'Imagem deve ter no máximo 5MB' : 'Arquivo inválido')
+    },
   })
 
   function handleUrlConfirm() {
@@ -95,7 +100,7 @@ export default function ImageUpload({ value, onChange, bucket = 'projects', labe
           <img
             src={value}
             alt="Preview"
-            className="w-full aspect-video object-cover rounded-lg border border-neutral-200"
+            className="w-full max-h-48 object-cover rounded-lg border border-neutral-200"
           />
           <button
             type="button"
@@ -118,7 +123,7 @@ export default function ImageUpload({ value, onChange, bucket = 'projects', labe
               ? 'Enviando...'
               : isDragActive
               ? 'Solte aqui'
-              : 'Arraste uma imagem ou clique para selecionar'}
+              : 'Arraste uma imagem ou clique para selecionar (máx. 5MB)'}
           </p>
         </div>
       ) : (

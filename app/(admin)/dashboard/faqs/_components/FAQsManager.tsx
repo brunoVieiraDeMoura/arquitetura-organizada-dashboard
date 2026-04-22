@@ -14,6 +14,10 @@ export default function FAQsManager({ initial }: { initial: FAQ[] }) {
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
   const [saving, setSaving] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editQuestion, setEditQuestion] = useState('')
+  const [editAnswer, setEditAnswer] = useState('')
+  const [editSaving, setEditSaving] = useState(false)
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
@@ -35,6 +39,27 @@ export default function FAQsManager({ initial }: { initial: FAQ[] }) {
     await supabase.from('faqs').delete().eq('id', id)
     setItems(items.filter((i) => i.id !== id))
     router.refresh()
+  }
+
+  function startEdit(f: FAQ) {
+    setEditingId(f.id)
+    setEditQuestion(f.question)
+    setEditAnswer(f.answer)
+  }
+
+  async function handleEditSave(id: string) {
+    setEditSaving(true)
+    const { data } = await supabase
+      .from('faqs')
+      .update({ question: editQuestion, answer: editAnswer })
+      .eq('id', id)
+      .select()
+      .single()
+    if (data) {
+      setItems(items.map((i) => i.id === id ? { ...i, question: editQuestion, answer: editAnswer } : i))
+      setEditingId(null)
+    }
+    setEditSaving(false)
   }
 
   return (
@@ -62,14 +87,52 @@ export default function FAQsManager({ initial }: { initial: FAQ[] }) {
         {items.length ? (
           <ul className="divide-y divide-neutral-100">
             {items.map((f) => (
-              <li key={f.id} className="flex items-start justify-between px-6 py-4">
-                <div>
-                  <p className="text-sm font-medium text-neutral-800">{f.question}</p>
-                  <p className="text-sm text-neutral-600 mt-1">{f.answer}</p>
-                </div>
-                <button onClick={() => handleDelete(f.id)} className="text-xs text-red-500 hover:underline shrink-0 ml-4">
-                  Deletar
-                </button>
+              <li key={f.id} className="px-6 py-4">
+                {editingId === f.id ? (
+                  <div className="space-y-3">
+                    <input
+                      value={editQuestion}
+                      onChange={(e) => setEditQuestion(e.target.value)}
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+                    />
+                    <textarea
+                      value={editAnswer}
+                      onChange={(e) => setEditAnswer(e.target.value)}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 resize-none"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleEditSave(f.id)}
+                        disabled={editSaving}
+                        className="text-xs text-neutral-900 font-medium hover:underline disabled:opacity-50"
+                      >
+                        {editSaving ? 'Salvando...' : 'Salvar'}
+                      </button>
+                      <button
+                        onClick={() => setEditingId(null)}
+                        className="text-xs text-neutral-400 hover:underline"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-medium text-neutral-800">{f.question}</p>
+                      <p className="text-sm text-neutral-600 mt-1">{f.answer}</p>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <button onClick={() => startEdit(f)} className="text-xs text-neutral-500 hover:underline">
+                        Editar
+                      </button>
+                      <button onClick={() => handleDelete(f.id)} className="text-xs text-red-500 hover:underline">
+                        Deletar
+                      </button>
+                    </div>
+                  </div>
+                )}
               </li>
             ))}
           </ul>

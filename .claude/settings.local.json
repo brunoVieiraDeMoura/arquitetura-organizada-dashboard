@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Bruno/.claude/**)",
+      "Bash(npm run *)",
+      "Bash(taskkill *)",
+      "PowerShell(Stop-Process *)",
+      "Bash(xargs grep *)",
+      "Bash(node scripts/seed.mjs)",
+      "Bash(node scripts/seed-content.mjs)",
+      "Bash(node scripts/trim.mjs)",
+      "Bash(mkcert --version)",
+      "Bash(ipconfig)",
+      "Bash(node *)",
+      "Bash(mkcert 192.168.1.2 localhost 127.0.0.1)",
+      "PowerShell(winget install *)",
+      "PowerShell(mkcert *)",
+      "Bash(curl *)",
+      "Bash(npm install *)",
+      "Bash(grep -iE \"\\\\.\\(png|jpg|jpeg|svg|webp|gif\\)$\")",
+      "Bash(grep -iE \"\\\\.\\(png|jpg|jpeg|svg|webp\\)$\")"
+    ]
+  }
+}

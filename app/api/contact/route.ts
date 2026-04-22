@@ -9,22 +9,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Campos obrigatórios ausentes.' }, { status: 400 })
   }
 
-  const gmailUser = process.env.GMAIL_USER
-  const gmailPass = process.env.GMAIL_APP_PASSWORD
+  const supabase = await createClient()
+  const { data: settingsRows } = await supabase
+    .from('settings')
+    .select('key, value')
+    .in('key', ['gmail_user', 'gmail_app_password'])
+
+  const getSetting = (key: string, fallback = '') =>
+    settingsRows?.find((r) => r.key === key)?.value ?? fallback
+
+  const gmailUser = getSetting('gmail_user') || process.env.GMAIL_USER
+  const gmailPass = getSetting('gmail_app_password') || process.env.GMAIL_APP_PASSWORD
+  const toEmail = gmailUser
 
   if (!gmailUser || !gmailPass) {
     return NextResponse.json({ error: 'Serviço de email não configurado.' }, { status: 503 })
   }
-
-  // Busca o email de destino cadastrado no dashboard
-  const supabase = await createClient()
-  const { data: row } = await supabase
-    .from('settings')
-    .select('value')
-    .eq('key', 'contact_email')
-    .single()
-
-  const toEmail = row?.value ?? gmailUser
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
 
   try {
     await transporter.sendMail({
-      from: `"Domu Arquitetura" <${gmailUser}>`,
+      from: `"Arquitetura Organizada" <${gmailUser}>`,
       to: toEmail,
       replyTo: email,
       subject: `Contato pelo site — ${name}`,

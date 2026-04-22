@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
-import { slugify } from '@/lib/utils'
+import { slugify, extractTiptapText } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import TiptapEditor from './TiptapEditor'
 import TiptapPreview from './TiptapPreview'
@@ -23,6 +24,32 @@ type Project = {
   gallery: string[]
   content: JSONContent | null
   is_featured: boolean
+  meta_description?: string
+}
+
+function InfoTooltip({ text }: { text: string }) {
+  const [show, setShow] = useState(false)
+  return (
+    <span className="relative inline-flex items-center">
+      <button
+        type="button"
+        onClick={() => setShow((v) => !v)}
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        onBlur={() => setShow(false)}
+        className="w-5 h-5 md:w-4 md:h-4 rounded-full bg-neutral-200 text-neutral-600 text-[10px] font-bold flex items-center justify-center hover:bg-neutral-300 transition-colors touch-manipulation"
+        aria-label="Informação"
+        aria-expanded={show}
+      >
+        i
+      </button>
+      {show && (
+        <span className="absolute left-0 top-7 md:left-6 md:top-1/2 md:-translate-y-1/2 z-50 w-64 md:w-56 bg-neutral-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg">
+          {text}
+        </span>
+      )}
+    </span>
+  )
 }
 
 type Props = {
@@ -43,6 +70,7 @@ export default function ProjectForm({ categories, initial, defaultCategoryId }: 
   const [gallery, setGallery] = useState<string[]>(initial?.gallery ?? [])
   const [content, setContent] = useState<JSONContent | null>(initial?.content ?? null)
   const [isFeatured, setIsFeatured] = useState(initial?.is_featured ?? false)
+  const [metaDescription, setMetaDescription] = useState(initial?.meta_description ?? '')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
@@ -67,6 +95,7 @@ export default function ProjectForm({ categories, initial, defaultCategoryId }: 
       gallery,
       content,
       is_featured: isFeatured,
+      meta_description: metaDescription || null,
       updated_at: new Date().toISOString(),
     }
 
@@ -151,10 +180,56 @@ export default function ProjectForm({ categories, initial, defaultCategoryId }: 
             <label htmlFor="featured" className="text-sm text-neutral-700">
               Destaque no Hero
             </label>
+            <InfoTooltip text="Projetos marcados aparecem em destaque no carrossel da página principal (Hero). Recomendado para seus melhores projetos." />
           </div>
 
-          <ImageUpload value={mainImage} onChange={setMainImage} />
-          <GalleryUpload value={gallery} onChange={setGallery} />
+          <div className="space-y-1">
+            <div className="flex items-center gap-1.5">
+              <span className="text-sm font-medium text-neutral-700">Imagens</span>
+              <InfoTooltip text="Tamanho máximo por imagem: 5MB. Formatos aceitos: JPG, PNG, WebP, GIF." />
+            </div>
+            <ImageUpload value={mainImage} onChange={setMainImage} />
+            <div className="pt-2">
+              <GalleryUpload value={gallery} onChange={setGallery} />
+            </div>
+          </div>
+
+          {/* SEO */}
+          <div className="border border-neutral-200 rounded-xl p-4 space-y-3">
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-neutral-700">SEO / Metadados</h3>
+              <Link
+                href="/dashboard/tutorial#seo"
+                target="_blank"
+                className="w-5 h-5 md:w-4 md:h-4 rounded-full bg-neutral-200 text-neutral-600 text-[10px] font-bold flex items-center justify-center hover:bg-neutral-300 transition-colors touch-manipulation"
+                title="O que é SEO / Metadados?"
+              >
+                ?
+              </Link>
+            </div>
+            <div>
+              <label className="block text-xs text-neutral-500 mb-1">Título (gerado automaticamente)</label>
+              <input
+                type="text"
+                readOnly
+                value={title || 'Preencha o título do projeto'}
+                className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm text-neutral-400 bg-neutral-50 cursor-not-allowed"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-neutral-500 mb-1">
+                Descrição SEO <span className="text-neutral-400">({metaDescription.length}/160)</span>
+              </label>
+              <textarea
+                value={metaDescription}
+                onChange={(e) => setMetaDescription(e.target.value)}
+                maxLength={160}
+                rows={3}
+                placeholder="Breve descrição do projeto para motores de busca..."
+                className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 resize-none"
+              />
+            </div>
+          </div>
 
           <div>
             <label className="block text-sm font-medium text-neutral-700 mb-2">Conteúdo</label>
@@ -173,13 +248,41 @@ export default function ProjectForm({ categories, initial, defaultCategoryId }: 
           </div>
         </div>
 
-        {/* Coluna direita — preview */}
-        <div className="w-full lg:w-96 lg:shrink-0 lg:sticky lg:top-8 lg:self-start lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto">
+        {/* Coluna direita — previews */}
+        <div className="w-full lg:w-96 lg:shrink-0 lg:sticky lg:top-8 lg:self-start lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto space-y-4">
+          {/* Card preview */}
+          <div className="bg-white border border-neutral-200 rounded-xl overflow-hidden">
+            <div className="px-4 py-3 border-b border-neutral-200 bg-neutral-50">
+              <span className="text-xs font-medium text-neutral-500 uppercase tracking-wider">Card Preview</span>
+            </div>
+            <div className="p-4">
+              <div className="rounded-xl border border-neutral-200 overflow-hidden">
+                <div className="aspect-[4/3] overflow-hidden bg-neutral-100">
+                  {mainImage ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={mainImage} alt={title} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-xs text-neutral-400">Sem imagem</div>
+                  )}
+                </div>
+                <div className="p-4">
+                  <h3 className="font-medium text-neutral-900 mb-1 text-sm">{title || 'Título do projeto'}</h3>
+                  <p className="text-xs text-neutral-400 mb-2" suppressHydrationWarning>{date || 'Data'}</p>
+                  {content && (
+                    <p className="text-sm text-neutral-500 line-clamp-2">{extractTiptapText(content, 110)}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Page preview */}
           <TiptapPreview
             title={title}
             mainImage={mainImage || null}
             content={content}
             date={date}
+            gallery={gallery}
           />
         </div>
       </div>

@@ -5,8 +5,44 @@ import { formatDate } from '@/lib/utils'
 import Footer from '@/components/site/Footer'
 import GalleryLightbox from '@/components/site/GalleryLightbox'
 import ProjectContent from '@/components/site/ProjectContent'
+import type { Metadata } from 'next'
 
 export const revalidate = 60
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ category: string; slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const supabase = await createClient()
+  const { data: project } = await supabase
+    .from('projects')
+    .select('title, meta_description, main_image, categories(name)')
+    .eq('slug', slug)
+    .single()
+
+  if (!project) return {}
+
+  const title = project.title
+  const description = project.meta_description || `Projeto de ${(project.categories as any)?.name || 'arquitetura'}: ${title}`
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      images: project.main_image ? [{ url: project.main_image, alt: title }] : [],
+    },
+    twitter: {
+      title,
+      description,
+      images: project.main_image ? [project.main_image] : [],
+    },
+  }
+}
 
 export default async function ProjectPage({
   params,
@@ -32,6 +68,7 @@ export default async function ProjectPage({
     alt: `${project.title} - foto ${i + 1}`,
   }))
 
+
   return (
     <>
       {/* Breadcrumb */}
@@ -40,7 +77,7 @@ export default async function ProjectPage({
           <nav className="flex items-center gap-2 text-sm text-neutral-500">
             <Link href="/" className="hover:text-neutral-900 transition-colors">Home</Link>
             <span>/</span>
-            <Link href="/#projetos" className="hover:text-neutral-900 transition-colors">Projetos</Link>
+            <Link href="/projetos" className="hover:text-neutral-900 transition-colors">Projetos</Link>
             <span>/</span>
             <Link href={`/${categorySlugResolved}`} className="hover:text-neutral-900 transition-colors">
               {categoryName}

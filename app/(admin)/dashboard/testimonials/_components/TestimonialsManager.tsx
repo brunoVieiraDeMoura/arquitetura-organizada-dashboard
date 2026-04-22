@@ -4,8 +4,9 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
+import ImageUpload from '@/components/admin/ImageUpload'
 
-type Testimonial = { id: string; author: string; role: string; content: string }
+type Testimonial = { id: string; author: string; role: string; content: string; avatar: string | null }
 
 export default function TestimonialsManager({ initial }: { initial: Testimonial[] }) {
   const router = useRouter()
@@ -14,19 +15,53 @@ export default function TestimonialsManager({ initial }: { initial: Testimonial[
   const [author, setAuthor] = useState('')
   const [role, setRole] = useState('')
   const [content, setContent] = useState('')
+  const [avatar, setAvatar] = useState('')
   const [saving, setSaving] = useState(false)
+
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editAuthor, setEditAuthor] = useState('')
+  const [editRole, setEditRole] = useState('')
+  const [editContent, setEditContent] = useState('')
+  const [editAvatar, setEditAvatar] = useState('')
+  const [editSaving, setEditSaving] = useState(false)
+
+  function startEdit(t: Testimonial) {
+    setEditingId(t.id)
+    setEditAuthor(t.author)
+    setEditRole(t.role)
+    setEditContent(t.content)
+    setEditAvatar(t.avatar ?? '')
+  }
+
+  function cancelEdit() {
+    setEditingId(null)
+  }
+
+  async function handleEditSave(id: string) {
+    setEditSaving(true)
+    const { data } = await supabase
+      .from('testimonials')
+      .update({ author: editAuthor, role: editRole, content: editContent, avatar: editAvatar || null })
+      .eq('id', id)
+      .select()
+      .single()
+    if (data) setItems(items.map((i) => i.id === id ? data : i))
+    setEditingId(null)
+    setEditSaving(false)
+    router.refresh()
+  }
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
     setSaving(true)
     const { data } = await supabase
       .from('testimonials')
-      .insert({ author, role, content })
+      .insert({ author, role, content, avatar: avatar || null })
       .select()
       .single()
     if (data) {
       setItems([data, ...items])
-      setAuthor(''); setRole(''); setContent('')
+      setAuthor(''); setRole(''); setContent(''); setAvatar('')
     }
     setSaving(false)
   }
@@ -63,6 +98,9 @@ export default function TestimonialsManager({ initial }: { initial: Testimonial[
               className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 resize-none"
               placeholder="O trabalho foi incrível..." />
           </div>
+          <div className="max-w-xs">
+            <ImageUpload value={avatar} onChange={setAvatar} bucket="categories" label="Foto do Cliente (opcional)" />
+          </div>
           <Button type="submit" disabled={saving}>{saving ? 'Adicionando...' : 'Adicionar'}</Button>
         </form>
       </div>
@@ -71,15 +109,60 @@ export default function TestimonialsManager({ initial }: { initial: Testimonial[
         {items.length ? (
           <ul className="divide-y divide-neutral-100">
             {items.map((t) => (
-              <li key={t.id} className="flex items-start justify-between px-6 py-4">
-                <div>
-                  <p className="text-sm font-medium text-neutral-800">{t.author}</p>
-                  {t.role && <p className="text-xs text-neutral-400">{t.role}</p>}
-                  <p className="text-sm text-neutral-600 mt-1">{t.content}</p>
-                </div>
-                <button onClick={() => handleDelete(t.id)} className="text-xs text-red-500 hover:underline shrink-0 ml-4">
-                  Deletar
-                </button>
+              <li key={t.id} className="px-6 py-4">
+                {editingId === t.id ? (
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      <input value={editAuthor} onChange={(e) => setEditAuthor(e.target.value)}
+                        className="px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+                        placeholder="Nome" />
+                      <input value={editRole} onChange={(e) => setEditRole(e.target.value)}
+                        className="px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+                        placeholder="Cargo / Empresa" />
+                    </div>
+                    <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} rows={3}
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 resize-none"
+                      placeholder="Depoimento" />
+                    <div className="max-w-xs">
+                      <ImageUpload value={editAvatar} onChange={setEditAvatar} bucket="categories" label="Foto do Cliente (opcional)" />
+                    </div>
+                    <div className="flex gap-2">
+                      <button onClick={() => handleEditSave(t.id)} disabled={editSaving}
+                        className="px-3 py-1.5 bg-neutral-900 text-white text-xs rounded-lg hover:bg-neutral-800 disabled:opacity-60">
+                        {editSaving ? 'Salvando...' : 'Salvar'}
+                      </button>
+                      <button onClick={cancelEdit} className="px-3 py-1.5 text-xs text-neutral-500 hover:text-neutral-700">
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      {t.avatar ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={t.avatar} alt={t.author} className="w-10 h-10 rounded-full object-cover shrink-0 border border-neutral-200" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-neutral-200 flex items-center justify-center shrink-0 text-sm font-medium text-neutral-500">
+                          {t.author.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-sm font-medium text-neutral-800">{t.author}</p>
+                        {t.role && <p className="text-xs text-neutral-400">{t.role}</p>}
+                        <p className="text-sm text-neutral-600 mt-1">{t.content}</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3 shrink-0">
+                      <button onClick={() => startEdit(t)} className="text-xs text-neutral-500 hover:underline">
+                        Editar
+                      </button>
+                      <button onClick={() => handleDelete(t.id)} className="text-xs text-red-500 hover:underline">
+                        Deletar
+                      </button>
+                    </div>
+                  </div>
+                )}
               </li>
             ))}
           </ul>

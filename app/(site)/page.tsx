@@ -6,6 +6,7 @@ import Testimonials from '@/components/site/Testimonials'
 import Contact from '@/components/site/Contact'
 import FAQ from '@/components/site/FAQ'
 import Footer from '@/components/site/Footer'
+import ScrollReveal from '@/components/ScrollReveal'
 
 export const revalidate = 60 // ISR: revalida a cada 60s
 
@@ -48,17 +49,20 @@ export default async function HomePage() {
 
   return (
     <>
+      <ScrollReveal />
       <Hero projects={(featuredProjects as any) ?? []} />
-      <Features categories={(categories as any) ?? []} />
-      <CTA />
-      <Testimonials testimonials={testimonials ?? []} />
-      <Contact
-        whatsappNumber={getSetting('whatsapp_number', '5511999999999')}
-        whatsappMessage={getSetting('whatsapp_message', 'Olá! Gostaria de saber mais sobre os projetos da Domu Arquitetura.')}
-        instagramPath={getSetting('instagram_path', 'domu.arquitetura')}
-      />
-      <FAQ faqs={faqs ?? []} />
-      <Footer />
+      <div data-reveal><Features categories={(categories as any) ?? []} /></div>
+      <div data-reveal><CTA /></div>
+      <div data-reveal><Testimonials testimonials={testimonials ?? []} /></div>
+      <div data-reveal><FAQ faqs={faqs ?? []} /></div>
+      <div data-reveal>
+        <Contact
+          whatsappNumber={getSetting('whatsapp_number', '5511999999999')}
+          whatsappMessage={getSetting('whatsapp_message', 'Olá! Gostaria de saber mais sobre os projetos da Arquitetura Organizada.')}
+          instagramPath={getSetting('instagram_path', 'domu.arquitetura')}
+        />
+      </div>
+      <div data-reveal><Footer /></div>
     </>
   )
 }

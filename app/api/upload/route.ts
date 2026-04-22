@@ -3,7 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
-const ALLOWED_BUCKETS = ['projects', 'categories']
+const ALLOWED_BUCKETS = ['projects', 'categories', 'logo']
 
 async function getAuthenticatedUser() {
   const cookieStore = await cookies()
@@ -52,6 +52,10 @@ export async function POST(request: NextRequest) {
 
   if (!file) {
     return NextResponse.json({ error: 'Nenhum arquivo enviado' }, { status: 400 })
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    return NextResponse.json({ error: 'Imagem deve ter no máximo 5MB' }, { status: 400 })
   }
 
   if (!ALLOWED_BUCKETS.includes(bucket)) {
