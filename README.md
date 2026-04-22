@@ -1,4 +1,4 @@
-# Domu Arquitetura — CMS
+# Arquitetura Organizada — CMS
 
 Site institucional com painel administrativo para estúdios de arquitetura e design de interiores. Construído com Next.js 16 App Router e Supabase.
 
