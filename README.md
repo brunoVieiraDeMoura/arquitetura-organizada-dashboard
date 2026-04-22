@@ -176,3 +176,4 @@ O cron roda automaticamente em produção a cada 10 minutos (`*/10 * * * *` em `
 4. Após o primeiro deploy, salve o snapshot via `POST /api/admin/snapshot`
 # arquitetura-organizada-dashboard
 # arquitetura-organizada-dashboard
+# arquitetura-organizada-dashboard
