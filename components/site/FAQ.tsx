@@ -15,7 +15,7 @@ export default function FAQ({ faqs }: { faqs: FAQ[] }) {
         <h2 className="text-3xl font-bold text-neutral-900 mb-12 text-center">Perguntas Frequentes</h2>
 
         <div className="space-y-3">
-          {faqs.map((f) => (
+          {faqs.slice(0, 5).map((f) => (
             <div key={f.id} className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
               <button
                 onClick={() => setOpen(open === f.id ? null : f.id)}

@@ -9,8 +9,8 @@ export default function Testimonials({ testimonials }: { testimonials: Testimoni
         <h2 className="text-3xl font-bold text-neutral-900 mb-12 text-center">O que dizem nossos clientes</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((t) => (
-            <div key={t.id} className="bg-white rounded-xl border border-neutral-200 p-6 flex flex-col">
+          {testimonials.slice(0, 6).map((t, i) => (
+            <div key={t.id} className={`bg-white rounded-xl border border-neutral-200 p-6 flex flex-col${i >= 4 ? ' hidden md:flex' : ''}`}>
               <p className="text-neutral-600 text-sm leading-relaxed mb-6 flex-1">"{t.content}"</p>
               <div className="flex items-center gap-3">
                 {t.avatar ? (
