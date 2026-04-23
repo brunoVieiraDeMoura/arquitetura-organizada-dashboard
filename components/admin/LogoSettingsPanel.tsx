@@ -120,14 +120,14 @@ export default function LogoSettingsPanel({ initial }: Props) {
             {/* Font picker */}
             <div>
               <label className="block text-xs font-medium text-neutral-600 mb-2">Tipografia</label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {FONTS.map((f) => (
                   <button
                     key={f.cssVar}
                     type="button"
                     onClick={() => setLogoFont(f.cssVar)}
                     style={{ fontFamily: f.cssVar }}
-                    className={`px-3 py-2.5 rounded-lg text-sm border transition-colors text-left ${
+                    className={`px-3 py-2.5 rounded-lg text-xs border transition-colors text-left truncate ${
                       logoFont === f.cssVar
                         ? 'border-neutral-900 bg-neutral-50 text-neutral-900'
                         : 'border-neutral-200 text-neutral-600 hover:border-neutral-400'
@@ -148,7 +148,7 @@ export default function LogoSettingsPanel({ initial }: Props) {
                     key={a.value}
                     type="button"
                     onClick={() => setSubnameAlign(a.value)}
-                    className={`flex-1 px-3 py-2 rounded-lg text-xs border transition-colors ${
+                    className={`flex-1 px-2 py-2 rounded-lg text-xs border transition-colors whitespace-nowrap overflow-hidden text-ellipsis ${
                       subnameAlign === a.value
                         ? 'border-neutral-900 bg-neutral-50 text-neutral-900 font-medium'
                         : 'border-neutral-200 text-neutral-500 hover:border-neutral-400'
