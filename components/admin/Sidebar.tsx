@@ -74,17 +74,17 @@ export default function Sidebar() {
             </Link>
           )
         })}
-      </nav>
-
-      <div className="px-3 py-4 border-t border-neutral-200 shrink-0 flex flex-col gap-1">
         <Link
           href="/"
           target="_blank"
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-neutral-600 hover:bg-neutral-100 transition-colors"
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-neutral-600 bg-neutral-100 hover:bg-neutral-200 transition-colors"
         >
           <ExternalLink size={16} />
           Ver site
         </Link>
+      </nav>
+
+      <div className="px-3 py-4 border-t border-neutral-200 shrink-0">
         <button
           onClick={handleLogout}
           className="w-full flex items-center justify-end gap-3 px-3 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
