@@ -6,17 +6,18 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import LogoBrand from '@/components/LogoBrand'
+import { LayoutDashboard, Palette, Tag, FolderKanban, MessageSquare, HelpCircle, Mail, BookOpen, LogOut, type LucideIcon } from 'lucide-react'
 
 const navItems = [
-  { href: '/dashboard', label: 'Visão Geral', exact: true },
-  { href: '/dashboard/identidade', label: 'Identidade' },
-  { href: '/dashboard/categories', label: 'Categorias' },
-  { href: '/dashboard/projects', label: 'Projetos' },
-  { href: '/dashboard/testimonials', label: 'Depoimentos' },
-  { href: '/dashboard/faqs', label: 'FAQs' },
-  { href: '/dashboard/contact', label: 'Contato' },
+  { href: '/dashboard', label: 'Visão Geral', exact: true, icon: LayoutDashboard },
+  { href: '/dashboard/identidade', label: 'Identidade', icon: Palette },
+  { href: '/dashboard/categories', label: 'Categorias', icon: Tag },
+  { href: '/dashboard/projects', label: 'Projetos', icon: FolderKanban },
+  { href: '/dashboard/testimonials', label: 'Depoimentos', icon: MessageSquare },
+  { href: '/dashboard/faqs', label: 'FAQs', icon: HelpCircle },
+  { href: '/dashboard/contact', label: 'Contato', icon: Mail },
   { separator: true },
-  { href: '/dashboard/tutorial', label: 'Tutorial' },
+  { href: '/dashboard/tutorial', label: 'Tutorial', icon: BookOpen },
 ] as const
 
 export default function Sidebar() {
@@ -55,18 +56,20 @@ export default function Sidebar() {
           const active = ('exact' in item && item.exact)
             ? pathname === item.href
             : pathname.startsWith(item.href)
+          const Icon = item.icon
           return (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => onClose?.()}
               className={cn(
-                'flex items-center px-3 py-2 rounded-lg text-sm transition-colors',
+                'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
                 active
                   ? 'bg-neutral-900 text-white'
                   : 'text-neutral-600 hover:bg-neutral-100'
               )}
             >
+              <Icon size={16} />
               {item.label}
             </Link>
           )
@@ -76,9 +79,10 @@ export default function Sidebar() {
       <div className="px-3 py-4 border-t border-neutral-200 shrink-0">
         <button
           onClick={handleLogout}
-          className="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+          className="w-full flex items-center justify-end gap-3 px-3 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
         >
           Sair
+          <LogOut size={16} />
         </button>
       </div>
     </>
@@ -87,9 +91,10 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile top bar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-white border-b border-neutral-200 flex items-center px-4">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-white border-b border-neutral-200 flex items-center justify-between px-4">
+        <span className="text-neutral-900"><LogoBrand /></span>
         <button
-          className="p-2 -ml-2 flex flex-col gap-1.5"
+          className="p-2 -mr-2 flex flex-col gap-1.5"
           onClick={() => setOpen(true)}
           aria-label="Abrir menu"
         >
@@ -97,7 +102,6 @@ export default function Sidebar() {
           <span className="block w-5 h-0.5 bg-neutral-900" />
           <span className="block w-5 h-0.5 bg-neutral-900" />
         </button>
-        <span className="ml-3 text-neutral-900"><LogoBrand /></span>
       </div>
 
       {/* Mobile overlay */}
@@ -111,8 +115,8 @@ export default function Sidebar() {
       {/* Mobile drawer */}
       <aside
         className={cn(
-          'fixed top-0 left-0 z-50 h-full w-64 bg-white flex flex-col transition-transform duration-200 md:hidden',
-          open ? 'translate-x-0' : '-translate-x-full'
+          'fixed top-0 right-0 z-50 h-screen w-64 bg-white flex flex-col transition-transform duration-200 md:hidden overflow-hidden',
+          open ? 'translate-x-0' : 'translate-x-full'
         )}
       >
         {navContent(() => setOpen(false))}

@@ -77,6 +77,12 @@ export default function LoginPage() {
             {loading ? 'Entrando...' : 'Entrar'}
           </Button>
         </form>
+
+        <div className="mt-6 p-3 bg-neutral-50 rounded-lg border border-neutral-200">
+          <p className="text-xs text-neutral-500 font-medium mb-1">Acesso de demonstração</p>
+          <p className="text-xs text-neutral-600">Email: <span className="font-mono">teste@teste.com</span></p>
+          <p className="text-xs text-neutral-600">Senha: <span className="font-mono">teste</span></p>
+        </div>
       </div>
     </div>
   )
