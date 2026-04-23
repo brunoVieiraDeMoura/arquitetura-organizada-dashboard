@@ -34,7 +34,7 @@ export default function Sidebar() {
   const navContent = (onClose?: () => void) => (
     <>
       <div className="px-6 py-5 border-b border-neutral-200 flex items-center justify-between shrink-0">
-        <span className="text-neutral-900"><LogoBrand /></span>
+        <Link href="/dashboard" className="text-neutral-900"><LogoBrand /></Link>
         {onClose && (
           <button
             className="p-1 -mr-1 text-neutral-400 hover:text-neutral-700"
@@ -100,7 +100,7 @@ export default function Sidebar() {
     <>
       {/* Mobile top bar */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-white border-b border-neutral-200 flex items-center justify-between px-4">
-        <span className="text-neutral-900"><LogoBrand /></span>
+        <Link href="/dashboard" className="text-neutral-900"><LogoBrand /></Link>
         <button
           className="p-2 -mr-2 flex flex-col gap-1.5"
           onClick={() => setOpen(true)}

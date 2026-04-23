@@ -2,12 +2,13 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import LogoBrand from '@/components/LogoBrand'
 
 const links = [
   { href: '/projetos', label: 'Projetos' },
-  { href: '#depoimentos', label: 'Depoimentos' },
-  { href: '#faq', label: 'FAQ' },
+  { href: '/#depoimentos', label: 'Depoimentos' },
+  { href: '/#faq', label: 'FAQ' },
 ]
 
 type LogoSettings = {
@@ -21,12 +22,20 @@ type LogoSettings = {
 
 export default function Navbar({ logoSettings }: { logoSettings?: LogoSettings }) {
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+
+  function handleLogoClick(e: React.MouseEvent) {
+    if (pathname === '/') {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[100]">
       <nav className="bg-white border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="text-neutral-900">
+          <Link href="/" className="text-neutral-900" onClick={handleLogoClick}>
             <LogoBrand {...logoSettings} />
           </Link>
 
@@ -37,7 +46,7 @@ export default function Navbar({ logoSettings }: { logoSettings?: LogoSettings }
                 {l.label}
               </a>
             ))}
-            <a href="#contato" className="text-sm bg-neutral-900 text-white px-4 py-2 rounded-lg hover:bg-neutral-800 transition-colors">
+            <a href="/#contato" className="text-sm bg-neutral-900 text-white px-4 py-2 rounded-lg hover:bg-neutral-800 transition-colors">
               Contato
             </a>
           </div>
@@ -81,7 +90,7 @@ export default function Navbar({ logoSettings }: { logoSettings?: LogoSettings }
               </a>
             ))}
             <a
-              href="#contato"
+              href="/#contato"
               onClick={() => setOpen(false)}
               className="mt-2 text-center text-sm bg-neutral-900 text-white px-4 py-3 rounded-lg hover:bg-neutral-800 transition-colors"
             >
