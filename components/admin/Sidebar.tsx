@@ -52,7 +52,7 @@ export default function Sidebar() {
           if ('separator' in item) {
             return <hr key={i} className="my-2 border-neutral-200" />
           }
-          const active = item.exact
+          const active = ('exact' in item && item.exact)
             ? pathname === item.href
             : pathname.startsWith(item.href)
           return (
