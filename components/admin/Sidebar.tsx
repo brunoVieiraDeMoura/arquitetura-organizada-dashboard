@@ -115,7 +115,7 @@ export default function Sidebar() {
       {/* Mobile drawer */}
       <aside
         className={cn(
-          'fixed top-0 right-0 z-50 h-screen w-64 bg-white flex flex-col transition-transform duration-200 md:hidden overflow-hidden',
+          'fixed top-0 right-0 z-50 h-[100dvh] w-64 bg-white flex flex-col transition-transform duration-200 md:hidden overflow-hidden',
           open ? 'translate-x-0' : 'translate-x-full'
         )}
       >
