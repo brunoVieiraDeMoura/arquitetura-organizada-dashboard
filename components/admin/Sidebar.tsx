@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import LogoBrand from '@/components/LogoBrand'
-import { LayoutDashboard, Palette, Tag, FolderKanban, MessageSquare, HelpCircle, Mail, BookOpen, LogOut, type LucideIcon } from 'lucide-react'
+import { LayoutDashboard, Palette, Tag, FolderKanban, MessageSquare, HelpCircle, Mail, BookOpen, LogOut, ExternalLink, type LucideIcon } from 'lucide-react'
 
 const navItems = [
   { href: '/dashboard', label: 'Visão Geral', exact: true, icon: LayoutDashboard },
@@ -76,7 +76,15 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="px-3 py-4 border-t border-neutral-200 shrink-0">
+      <div className="px-3 py-4 border-t border-neutral-200 shrink-0 flex flex-col gap-1">
+        <Link
+          href="/"
+          target="_blank"
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-neutral-600 hover:bg-neutral-100 transition-colors"
+        >
+          <ExternalLink size={16} />
+          Ver site
+        </Link>
         <button
           onClick={handleLogout}
           className="w-full flex items-center justify-end gap-3 px-3 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
