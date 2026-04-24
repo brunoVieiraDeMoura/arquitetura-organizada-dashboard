@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import ImageUpload from '@/components/admin/ImageUpload'
+import { Pencil, Trash2 } from 'lucide-react'
 
 type Testimonial = { id: string; author: string; role: string; content: string; avatar: string | null }
 
@@ -153,12 +154,22 @@ export default function TestimonialsManager({ initial }: { initial: Testimonial[
                         <p className="text-sm text-neutral-600 mt-1">{t.content}</p>
                       </div>
                     </div>
-                    <div className="flex gap-3 shrink-0">
-                      <button onClick={() => startEdit(t)} className="text-xs text-neutral-500 hover:underline">
-                        Editar
+                    <div className="flex items-center gap-1 sm:gap-3 shrink-0">
+                      <button
+                        onClick={() => startEdit(t)}
+                        className="p-1.5 sm:p-0 rounded-md text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 sm:hover:bg-transparent transition-colors"
+                        title="Editar"
+                      >
+                        <Pencil className="w-4 h-4 sm:hidden" />
+                        <span className="hidden sm:inline text-xs hover:underline">Editar</span>
                       </button>
-                      <button onClick={() => handleDelete(t.id)} className="text-xs text-red-500 hover:underline">
-                        Deletar
+                      <button
+                        onClick={() => handleDelete(t.id)}
+                        className="p-1.5 sm:p-0 rounded-md text-red-500 hover:text-red-700 hover:bg-red-50 sm:hover:bg-transparent transition-colors"
+                        title="Deletar"
+                      >
+                        <Trash2 className="w-4 h-4 sm:hidden" />
+                        <span className="hidden sm:inline text-xs hover:underline">Deletar</span>
                       </button>
                     </div>
                   </div>

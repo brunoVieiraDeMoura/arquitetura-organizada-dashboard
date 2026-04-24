@@ -20,7 +20,8 @@
       "Bash(grep -iE \"\\\\.\\(png|jpg|jpeg|svg|webp|gif\\)$\")",
       "Bash(grep -iE \"\\\\.\\(png|jpg|jpeg|svg|webp\\)$\")",
       "WebFetch(domain:transparencia.cau.br)",
-      "Bash(pip --version)"
+      "Bash(pip --version)",
+      "Bash(cp *)"
     ]
   }
 }

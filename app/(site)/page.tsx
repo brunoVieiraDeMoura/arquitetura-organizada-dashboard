@@ -62,7 +62,7 @@ export default async function HomePage() {
           instagramPath={getSetting('instagram_path', 'domu.arquitetura')}
         />
       </div>
-      <div data-reveal><Footer /></div>
+      <Footer />
     </>
   )
 }

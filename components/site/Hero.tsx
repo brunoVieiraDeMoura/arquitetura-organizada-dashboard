@@ -40,7 +40,7 @@ export default function Hero({ projects }: { projects: Project[] }) {
   }
 
   return (
-    <section className="relative h-[100dvh] overflow-hidden">
+    <section className="relative h-[100svh] overflow-hidden">
       {/* Background images (all rendered, only active is visible) */}
       {projects.map((p, i) => (
         // eslint-disable-next-line @next/next/no-img-element
