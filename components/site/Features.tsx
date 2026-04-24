@@ -96,12 +96,13 @@ export default function Features({ categories }: { categories: Category[] }) {
                       )
                     })}
                   </div>
-                  <div className="mt-6 text-right">
+                  <div className="mt-6 flex justify-end">
                     <Link
                       href={`/${cat.slug}`}
-                      className="inline-flex items-center gap-1.5 text-sm font-medium text-neutral-700 hover:text-neutral-900 transition-colors underline-offset-4 hover:underline"
+                      className="inline-flex items-center gap-2 text-sm border border-neutral-300 text-neutral-700 px-4 py-2 rounded-lg hover:bg-neutral-900 hover:text-white hover:border-neutral-900 transition-colors"
                     >
-                      Ver todos de {cat.name} →
+                      Ver todos de {cat.name}
+                      <span className="text-xs">→</span>
                     </Link>
                   </div>
                 </>

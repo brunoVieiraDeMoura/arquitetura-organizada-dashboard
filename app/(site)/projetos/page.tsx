@@ -128,7 +128,7 @@ export default async function ProjetosPage() {
                         )
                       })}
                     </div>
-                    <div className="mt-6">
+                    <div className="mt-6 flex justify-end">
                       <Link
                         href={`/${cat.slug}`}
                         className="inline-flex items-center gap-2 text-sm border border-neutral-300 text-neutral-700 px-4 py-2 rounded-lg hover:bg-neutral-900 hover:text-white hover:border-neutral-900 transition-colors"
