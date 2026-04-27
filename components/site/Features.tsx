@@ -24,13 +24,13 @@ export default function Features({ categories }: { categories: Category[] }) {
 
   return (
     <section id="projetos" className="py-16 md:py-24 px-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-[1000px] mx-auto">
         <h2 className="text-3xl font-bold text-neutral-900 mb-16 text-center">Nossos Projetos</h2>
 
         {visibleCategories.map((cat) => {
           const coverProject = cat.projects[0]
-          // Show at most 2 projects per category
-          const visibleProjects = cat.projects.slice(0, 2)
+          // Show at most 4 projects per category
+          const visibleProjects = cat.projects.slice(0, 4)
 
           return (
             <div key={cat.id} className="mb-20">
@@ -68,16 +68,16 @@ export default function Features({ categories }: { categories: Category[] }) {
 
               {visibleProjects.length > 0 ? (
                 <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {visibleProjects.map((p) => {
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    {visibleProjects.map((p, pi) => {
                       const excerpt = extractTiptapText(p.content, 110)
                       return (
                         <Link
                           key={p.id}
                           href={`/${cat.slug}/${p.slug}`}
-                          className="group block overflow-hidden rounded-xl border border-neutral-200 hover:shadow-lg transition-shadow"
+                          className={`group block overflow-hidden rounded-xl border border-neutral-200 hover:shadow-lg transition-shadow${pi >= 2 ? ' hidden md:block' : ''}`}
                         >
-                          <div className="aspect-[4/3] overflow-hidden">
+                          <div className="aspect-video overflow-hidden">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={p.main_image}

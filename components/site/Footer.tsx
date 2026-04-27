@@ -7,7 +7,7 @@ export default async function Footer() {
 
   return (
     <footer className="bg-neutral-900 text-white py-12 px-6">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="max-w-[1000px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="text-center md:text-left">
           <p className="font-semibold text-sm tracking-wide uppercase mb-1">{name}</p>
           <p className="text-xs text-neutral-400">Design de interiores e arquitetura</p>

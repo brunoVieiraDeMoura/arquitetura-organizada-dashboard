@@ -25,6 +25,7 @@ export default function Navbar({ logoSettings }: { logoSettings?: LogoSettings }
   const pathname = usePathname()
 
   function handleLogoClick(e: React.MouseEvent) {
+    setOpen(false)
     if (pathname === '/') {
       e.preventDefault()
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -34,7 +35,7 @@ export default function Navbar({ logoSettings }: { logoSettings?: LogoSettings }
   return (
     <header className="fixed top-0 left-0 right-0 z-[100]">
       <nav className="bg-white border-b border-neutral-200">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-[1000px] mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="text-neutral-900" onClick={handleLogoClick}>
             <LogoBrand {...logoSettings} />
           </Link>

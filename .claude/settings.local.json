@@ -21,7 +21,16 @@
       "Bash(grep -iE \"\\\\.\\(png|jpg|jpeg|svg|webp\\)$\")",
       "WebFetch(domain:transparencia.cau.br)",
       "Bash(pip --version)",
-      "Bash(cp *)"
+      "Bash(cp *)",
+      "PowerShell(robocopy \"C:\\\\Users\\\\Bruno\\\\desktop\\\\arquitetura-organizada\" \"C:\\\\Users\\\\Bruno\\\\desktop\\\\advocacia-organizada\" /E /XD node_modules .next .git /XF .env.local tsconfig.tsbuildinfo /NFL /NDL /NJH /NJS /NC /NS 2>&1 | Select-Object -Last 5)",
+      "PowerShell(robocopy \"C:\\\\Users\\\\Bruno\\\\desktop\\\\arquitetura-organizada\" \"C:\\\\Users\\\\Bruno\\\\desktop\\\\advocacia-organizada\" /E /XD node_modules .next .git /XF .env.local tsconfig.tsbuildinfo; Write-Host \"ExitCode: $LASTEXITCODE\")",
+      "PowerShell(Remove-Item *)",
+      "PowerShell(Test-Path *)",
+      "PowerShell(Rename-Item *)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Bruno\\\\desktop\\\\advocacia-organizada\\\\app\\\\\\(site\\)\" -Recurse | Select-Object FullName | ForEach-Object { $_.FullName.Replace\\(\"C:\\\\Users\\\\Bruno\\\\desktop\\\\advocacia-organizada\\\\\", \"\"\\) })",
+      "Bash(python3 *)",
+      "Bash(python C:/Users/Bruno/desktop/arquitetura-organizada/scripts/seed_projects.py)",
+      "Bash(py C:/Users/Bruno/desktop/arquitetura-organizada/scripts/seed_projects.py)"
     ]
   }
 }

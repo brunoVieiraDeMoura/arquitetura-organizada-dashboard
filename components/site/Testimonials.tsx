@@ -5,7 +5,7 @@ export default function Testimonials({ testimonials }: { testimonials: Testimoni
 
   return (
     <section id="depoimentos" className="py-16 md:py-24 px-6 bg-neutral-50">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-[1000px] mx-auto">
         <h2 className="text-3xl font-bold text-neutral-900 mb-12 text-center">O que dizem nossos clientes</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
